@@ -1,5 +1,5 @@
 BUILD ?= STANDARD
-PROJECT_NAME ?= tabela
+PROJECT_NAME ?= calculator
 
 SRC_DIR = src
 
