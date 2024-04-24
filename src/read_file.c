@@ -25,34 +25,40 @@ void read_raw_data(const char* filename)
 
 	double *number = sample_array;
 
-	while (fscanf(raw_data, "%lf", number++) > 0)
+	do
 	{
-		sample_size++;
-
-		if (sample_size >= sample_array_size)
+		if (fscanf(raw_data, "%lf", number) > 0)
 		{
-			double* reallocated_array = realloc(sample_array, ((sample_array_size * 2) + 1) * sizeof(double));
+			number++;
+			sample_size++;
 
-			if (reallocated_array == NULL)
+			if (sample_size >= sample_array_size)
 			{
-				printf("Error: unable to reallocate array.\n");
-				free(sample_array);
-				exit(1);
+				double* reallocated_array = realloc(sample_array, ((sample_array_size * 2) + 1) * sizeof(double));
+
+				if (reallocated_array == NULL)
+				{
+					printf("Error: unable to reallocate array.\n");
+					free(sample_array);
+					exit(1);
+				}
+
+				sample_array_size = (sample_array_size * 2) + 1;
+
+				sample_array = reallocated_array;
+
+				number = sample_array + sample_size;
+
 			}
-
-			sample_array_size = (sample_array_size * 2) + 1;
-
-			sample_array = reallocated_array;
-
-			number = sample_array + sample_size;
-
+		
 		}
-
-	}
+		else
+		{
+			getc(raw_data);
+		}
+	} while (!feof(raw_data));
 
 	fclose(raw_data);
-
-	printf("\b\b \n");
 
 	if (sample_size == 0)
 	{
